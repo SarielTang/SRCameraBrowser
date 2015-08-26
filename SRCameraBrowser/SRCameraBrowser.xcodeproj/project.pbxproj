@@ -23,6 +23,9 @@
 		0DD34C681B8B13ED00218188 /* IFTTTDeviceOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DD34C591B8B13ED00218188 /* IFTTTDeviceOrientation.m */; };
 		0DD34C691B8B13ED00218188 /* UIImage+FastttCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DD34C5B1B8B13ED00218188 /* UIImage+FastttCamera.m */; };
 		0DD34C6A1B8B13ED00218188 /* UIViewController+FastttCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DD34C5D1B8B13ED00218188 /* UIViewController+FastttCamera.m */; };
+		0DDE14AB1B8D53B3004420FA /* SRPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDE14AA1B8D53B3004420FA /* SRPhotoBrowser.m */; };
+		0DDE14AD1B8D561F004420FA /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DDE14AC1B8D561F004420FA /* AssetsLibrary.framework */; };
+		0DF61C9C1B8B2FD900D53F9E /* SRCameraController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF61C9B1B8B2FD900D53F9E /* SRCameraController.m */; };
 		5CE976DC3DA07A9EAE78396B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C86D41914579134075026 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +72,11 @@
 		0DD34C5B1B8B13ED00218188 /* UIImage+FastttCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FastttCamera.m"; sourceTree = "<group>"; };
 		0DD34C5C1B8B13ED00218188 /* UIViewController+FastttCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+FastttCamera.h"; sourceTree = "<group>"; };
 		0DD34C5D1B8B13ED00218188 /* UIViewController+FastttCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+FastttCamera.m"; sourceTree = "<group>"; };
+		0DDE14A91B8D53B3004420FA /* SRPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRPhotoBrowser.h; sourceTree = "<group>"; };
+		0DDE14AA1B8D53B3004420FA /* SRPhotoBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRPhotoBrowser.m; sourceTree = "<group>"; };
+		0DDE14AC1B8D561F004420FA /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		0DF61C9A1B8B2FD900D53F9E /* SRCameraController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRCameraController.h; sourceTree = "<group>"; };
+		0DF61C9B1B8B2FD900D53F9E /* SRCameraController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRCameraController.m; sourceTree = "<group>"; };
 		248C86D41914579134075026 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B84ABA9DC7CC1D93412343A5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		C7C3A4ED2A44195328037419 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -79,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DDE14AD1B8D561F004420FA /* AssetsLibrary.framework in Frameworks */,
 				5CE976DC3DA07A9EAE78396B /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,6 +128,10 @@
 				0DD34C401B8B13EC00218188 /* FastttCamera */,
 				0DD34C1C1B8B04CD00218188 /* AppDelegate.h */,
 				0DD34C1D1B8B04CD00218188 /* AppDelegate.m */,
+				0DF61C9A1B8B2FD900D53F9E /* SRCameraController.h */,
+				0DF61C9B1B8B2FD900D53F9E /* SRCameraController.m */,
+				0DDE14A91B8D53B3004420FA /* SRPhotoBrowser.h */,
+				0DDE14AA1B8D53B3004420FA /* SRPhotoBrowser.m */,
 				0DD34C1F1B8B04CE00218188 /* ViewController.h */,
 				0DD34C201B8B04CE00218188 /* ViewController.m */,
 				0DD34C221B8B04CE00218188 /* Main.storyboard */,
@@ -193,6 +206,7 @@
 		A881896CEDA2B47B5B69ED62 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0DDE14AC1B8D561F004420FA /* AssetsLibrary.framework */,
 				248C86D41914579134075026 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -335,6 +349,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0DD34C211B8B04CE00218188 /* ViewController.m in Sources */,
+				0DF61C9C1B8B2FD900D53F9E /* SRCameraController.m in Sources */,
+				0DDE14AB1B8D53B3004420FA /* SRPhotoBrowser.m in Sources */,
 				0DD34C6A1B8B13ED00218188 /* UIViewController+FastttCamera.m in Sources */,
 				0DD34C1E1B8B04CD00218188 /* AppDelegate.m in Sources */,
 				0DD34C5E1B8B13ED00218188 /* AVCaptureDevice+FastttCamera.m in Sources */,
