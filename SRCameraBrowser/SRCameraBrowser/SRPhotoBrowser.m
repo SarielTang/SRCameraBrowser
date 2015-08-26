@@ -7,8 +7,8 @@
 //
 
 #import "SRPhotoBrowser.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import <MWPhotoBrowser/MWPhotoBrowser.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface SRPhotoBrowser ()<MWPhotoBrowserDelegate>
 {
@@ -17,9 +17,7 @@
 }
 @property (nonatomic, strong) NSMutableArray *photos;
 @property (nonatomic, strong) NSMutableArray *thumbs;
-@property (nonatomic, strong) NSMutableArray *assets;
 
-@property (nonatomic, strong) ALAssetsLibrary *ALAssetsLibrary;
 
 @end
 
@@ -28,14 +26,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self loadAssets];
     NSMutableArray *photos = [[NSMutableArray alloc] init];
     NSMutableArray *thumbs = [[NSMutableArray alloc] init];
-    BOOL displayActionButton = YES;
-    BOOL displaySelectionButtons = NO;
+    BOOL displayActionButton = NO;
+    BOOL displaySelectionButtons = YES;
     BOOL displayNavArrows = NO;
-    BOOL enableGrid = YES;
-    BOOL startOnGrid = NO;
+    BOOL enableGrid = NO;
+    BOOL startOnGrid = YES;
     BOOL autoPlayOnAppear = NO;
     
     @synchronized(_assets) {
@@ -90,7 +87,9 @@
         }
     }
     // Push
-    [self.navigationController pushViewController:browser animated:NO];
+//    [self.navigationController pushViewController:browser animated:NO];
+    [self addChildViewController:browser];
+    [self.view addSubview:browser.view];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -128,110 +127,30 @@
 - (void)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index selectedChanged:(BOOL)selected {
     [_selections replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:selected]];
     NSLog(@"Photo at index %lu selected %@", (unsigned long)index, selected ? @"YES" : @"NO");
+    if (selected) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStyleDone target:self action:@selector(finishedSelected)];
+    }
+}
+
+- (void)finishedSelected {
+    NSLog(@"press finished button");
+    NSMutableArray *selectedPhotos = [NSMutableArray array];
+    for (int i = 0;i<_selections.count;i++) {
+        if ([_selections[i] boolValue]) {
+            [self.photos[i] loadUnderlyingImageAndNotify];
+            [selectedPhotos addObject:[self.photos[i] underlyingImage]];
+        }
+    }
+    if ([self.delegate respondsToSelector:@selector(didSelectSomePhotos:photos:)]) {
+        [self.delegate didSelectSomePhotos:self photos:selectedPhotos];
+        [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
+    }
 }
 
 - (void)photoBrowserDidFinishModalPresentation:(MWPhotoBrowser *)photoBrowser {
     // If we subscribe to this method we must dismiss the view controller ourselves
     NSLog(@"Did finish modal presentation");
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - Load Assets
-
-- (void)loadAssets {
-    if (NSClassFromString(@"PHAsset")) {
-        
-        // Check library permissions
-        PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-        if (status == PHAuthorizationStatusNotDetermined) {
-            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-                if (status == PHAuthorizationStatusAuthorized) {
-                    [self performLoadAssets];
-                }
-            }];
-        } else if (status == PHAuthorizationStatusAuthorized) {
-            [self performLoadAssets];
-        }
-        
-    } else {
-        
-        // Assets library
-        [self performLoadAssets];
-        
-    }
-}
-
-- (void)performLoadAssets {
-    
-    // Initialise
-    _assets = [NSMutableArray new];
-    
-    // Load
-    if (NSClassFromString(@"PHAsset")) {
-        
-        // Photos library iOS >= 8
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            PHFetchOptions *options = [PHFetchOptions new];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-            PHFetchResult *fetchResults = [PHAsset fetchAssetsWithOptions:options];
-            [fetchResults enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                [_assets addObject:obj];
-            }];
-        });
-        
-    } else {
-        
-        // Assets Library iOS < 8
-        _ALAssetsLibrary = [[ALAssetsLibrary alloc] init];
-        
-        // Run in the background as it takes a while to get all assets from the library
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            NSMutableArray *assetGroups = [[NSMutableArray alloc] init];
-            NSMutableArray *assetURLDictionaries = [[NSMutableArray alloc] init];
-            
-            // Process assets
-            void (^assetEnumerator)(ALAsset *, NSUInteger, BOOL *) = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                if (result != nil) {
-                    NSString *assetType = [result valueForProperty:ALAssetPropertyType];
-                    if ([assetType isEqualToString:ALAssetTypePhoto] || [assetType isEqualToString:ALAssetTypeVideo]) {
-                        [assetURLDictionaries addObject:[result valueForProperty:ALAssetPropertyURLs]];
-                        NSURL *url = result.defaultRepresentation.url;
-                        [_ALAssetsLibrary assetForURL:url
-                                          resultBlock:^(ALAsset *asset) {
-                                              if (asset) {
-                                                  @synchronized(_assets) {
-                                                      [_assets addObject:asset];
-                                                  }
-                                              }
-                                          }
-                                         failureBlock:^(NSError *error){
-                                             NSLog(@"operation was not successfull!");
-                                         }];
-                        
-                    }
-                }
-            };
-            
-            // Process groups
-            void (^ assetGroupEnumerator) (ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop) {
-                if (group != nil) {
-                    [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:assetEnumerator];
-                    [assetGroups addObject:group];
-                }
-            };
-            
-            // Process!
-            [_ALAssetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
-                                            usingBlock:assetGroupEnumerator
-                                          failureBlock:^(NSError *error) {
-                                              NSLog(@"There is an error");
-                                          }];
-            
-        });
-        
-    }
-    
 }
 
 @end

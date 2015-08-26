@@ -54,7 +54,16 @@
     [self.view addSubview:self.takePhotoButton];
     [self.takePhotoButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view);
-        make.bottom.equalTo(self.view).offset(-20.f);
+        make.bottom.equalTo(self.view).offset(-15.f);
+    }];
+    
+    UIButton *cancelBtn = [UIButton new];
+    [cancelBtn addTarget:self action:@selector(cancelBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
+    [self.view addSubview:cancelBtn];
+    [cancelBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(self.view.mas_leading).offset(20);
+        make.bottom.equalTo(self.view).offset(-15);
     }];
     
     _flashButton = [UIButton new];
@@ -113,6 +122,9 @@
         make.size.equalTo(self.flashButton);
     }];
 
+}
+- (void)cancelBtnClick {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)takePhotoButtonPressed
@@ -227,20 +239,9 @@ didFinishScalingCapturedImage:(FastttCapturedImage *)capturedImage
      *  Here, capturedImage.scaledImage contains the scaled-down version
      *  of the image.
      */
-    [self savePhotoToCameraRollWithImage:capturedImage.scaledImage];
+//    [self savePhotoToCameraRollWithImage:capturedImage.scaledImage];
     NSLog(@"压缩图片大小：%zdKB",UIImageJPEGRepresentation(capturedImage.scaledImage, 1.0).length/1024);
-}
-
-- (void)cameraController:(FastttCamera *)cameraController
-didFinishNormalizingCapturedImage:(FastttCapturedImage *)capturedImage
-{
-    /**
-     *  Here, capturedImage.fullImage and capturedImage.scaledImage have
-     *  been rotated so that they have image orientations equal to
-     *  UIImageOrientationUp. These images are ready for saving and uploading,
-     *  as they should be rendered more consistently across different web
-     *  services than images with non-standard orientations.
-     */
+    
     // Browser
     NSMutableArray *photos = [[NSMutableArray alloc] init];
     MWPhoto *photo;
@@ -271,6 +272,20 @@ didFinishNormalizingCapturedImage:(FastttCapturedImage *)capturedImage
     [browser setCurrentPhotoIndex:0];
     
     [self.navigationController pushViewController:browser animated:NO];
+}
+
+- (void)cameraController:(FastttCamera *)cameraController
+didFinishNormalizingCapturedImage:(FastttCapturedImage *)capturedImage
+{
+    /**
+     *  Here, capturedImage.fullImage and capturedImage.scaledImage have
+     *  been rotated so that they have image orientations equal to
+     *  UIImageOrientationUp. These images are ready for saving and uploading,
+     *  as they should be rendered more consistently across different web
+     *  services than images with non-standard orientations.
+     */
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

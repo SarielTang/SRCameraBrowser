@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class SRPhotoBrowser;
+@protocol SRPhotoBrowserDelegate <NSObject>
+
+- (void)didSelectSomePhotos:(SRPhotoBrowser *)vc photos:(NSArray *)photos;
+
+@end
+
 @interface SRPhotoBrowser : UIViewController
+
+@property (nonatomic, strong) NSMutableArray *assets;
+
+@property (nonatomic, weak) id<SRPhotoBrowserDelegate> delegate;
 
 @end
