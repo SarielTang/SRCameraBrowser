@@ -129,20 +129,32 @@
     NSLog(@"Photo at index %lu selected %@", (unsigned long)index, selected ? @"YES" : @"NO");
     if (selected) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStyleDone target:self action:@selector(finishedSelected)];
+        [self.photos[index] loadUnderlyingImageAndNotify];
+        [self.thumbs[index] loadUnderlyingImageAndNotify];
+    }else {
+        for (NSNumber *item in _selections) {
+            if ([item boolValue]) {
+                return;
+            }
+        }
+        self.navigationItem.rightBarButtonItem = nil;
     }
 }
 
 - (void)finishedSelected {
     NSLog(@"press finished button");
     NSMutableArray *selectedPhotos = [NSMutableArray array];
+    NSMutableArray *selectedThumbs = [NSMutableArray array];
     for (int i = 0;i<_selections.count;i++) {
         if ([_selections[i] boolValue]) {
-            [self.photos[i] loadUnderlyingImageAndNotify];
+//            [self.photos[i] loadUnderlyingImageAndNotify];
             [selectedPhotos addObject:[self.photos[i] underlyingImage]];
+//            [self.thumbs[i] loadUnderlyingImageAndNotify];
+            [selectedThumbs addObject:[self.thumbs[i] underlyingImage]];
         }
     }
-    if ([self.delegate respondsToSelector:@selector(didSelectSomePhotos:photos:)]) {
-        [self.delegate didSelectSomePhotos:self photos:selectedPhotos];
+    if ([self.delegate respondsToSelector:@selector(didSelectSomePhotos:photos:thumbs:)]) {
+        [self.delegate didSelectSomePhotos:self photos:selectedPhotos thumbs:selectedThumbs];
         [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
     }
 }

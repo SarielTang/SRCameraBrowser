@@ -32,10 +32,12 @@
     UIButton *btn = [[UIButton alloc]init];
     _uploadBtn = btn;
     [self.view addSubview:btn];
-    [btn setBackgroundImage:[UIImage imageNamed:@"addPhoto"] forState:UIControlStateNormal];
+    UIImage *backgroundImage = [UIImage imageNamed:@"addPhoto"];
+    [btn setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [btn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
+        make.size.mas_equalTo(backgroundImage.size);
     }];
     
     [self loadAssets];
@@ -94,10 +96,10 @@
     
 }
 
-- (void)didSelectSomePhotos:(SRPhotoBrowser *)vc photos:(NSArray *)photos {
-    NSLog(@"得到选中的照片:%@",photos);
+- (void)didSelectSomePhotos:(SRPhotoBrowser *)vc photos:(NSArray *)photos thumbs:(NSArray *)thumbs{
+    NSLog(@"得到选中的照片:%@ \n缩略图:%@",photos,thumbs);
     if (photos != nil) {
-        [_uploadBtn setImage:photos[0] forState:UIControlStateNormal];
+        [_uploadBtn setBackgroundImage:thumbs[0] forState:UIControlStateNormal];
     }
 }
 

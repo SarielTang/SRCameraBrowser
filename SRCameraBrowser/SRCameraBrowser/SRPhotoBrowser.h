@@ -10,8 +10,7 @@
 
 @class SRPhotoBrowser;
 @protocol SRPhotoBrowserDelegate <NSObject>
-
-- (void)didSelectSomePhotos:(SRPhotoBrowser *)vc photos:(NSArray *)photos;
+- (void)didSelectSomePhotos:(SRPhotoBrowser *)vc photos:(NSArray *)photos thumbs:(NSArray *)thumbs;
 
 @end
 
