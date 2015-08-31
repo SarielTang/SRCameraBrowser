@@ -148,9 +148,14 @@
     for (int i = 0;i<_selections.count;i++) {
         if ([_selections[i] boolValue]) {
 //            [self.photos[i] loadUnderlyingImageAndNotify];
-            [selectedPhotos addObject:[self.photos[i] underlyingImage]];
+            if ([self.photos[i] underlyingImage] != nil) {
+                [selectedPhotos addObject:[self.photos[i] underlyingImage]];
+            }
+            
 //            [self.thumbs[i] loadUnderlyingImageAndNotify];
-            [selectedThumbs addObject:[self.thumbs[i] underlyingImage]];
+            if ([self.thumbs[i] underlyingImage]!= nil) {
+                [selectedThumbs addObject:[self.thumbs[i] underlyingImage]];
+            }
         }
     }
     if ([self.delegate respondsToSelector:@selector(didSelectSomePhotos:photos:thumbs:)]) {
